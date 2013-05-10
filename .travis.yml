@@ -1,0 +1,9 @@
+before_script:
+  # only if you don't commit the testbeds to git
+  - generate-testbeds
+
+script: "rake testbeds:current:rspec"
+
+gemfiles:
+  - path/to/gemfiles/rails-3.2
+  - path/to/gemfiles/rails-4.0

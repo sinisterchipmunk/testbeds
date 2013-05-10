@@ -1,0 +1,62 @@
+#!/usr/bin/env ruby
+
+require File.expand_path('../lib/testbeds', File.dirname(__FILE__))
+require 'fileutils'
+
+include FileUtils
+
+def run *command
+  puts "bundle exec #{command.join(' ')}"
+  if ENV["VERBOSE"]
+    if command.length == 1
+      result = system "bundle exec #{command}"
+    else
+      result = system "bundle", "exec", *command.collect { |c| c.to_s }
+    end
+    raise "Command failed" unless result
+  else
+    `bundle exec #{command.join(' ')}`
+    raise "Command failed\n\n#{output}" unless $?.success?
+  end
+end
+
+if testbed = Testbeds.current
+  testbed_directory = testbed.store_in.to_s
+
+  chdir testbed_directory
+
+  puts 'bundle install'
+  if ENV['VERBOSE']
+    unless system 'bundle install'
+      raise "Couldn't install bundle for testbed #{testbed.name}"
+    end
+  else
+    output = `bundle install`
+    unless $?.success?
+      raise "Couldn't install bundle for testbed #{testbed.name}\n\n#{output}"
+    end
+  end
+
+  testbed.run_init_script
+else
+  cleared = {}
+  Testbeds.each do |testbed|
+    testbed_directory = testbed.store_in.to_s
+
+    unless cleared[testbed_directory]
+      if File.directory?(testbed_directory)
+        puts "rm -rf #{testbed_directory}"
+        rm_rf testbed_directory
+        cleared[testbed_directory] = 1
+      end
+
+      puts "mkdir -p #{testbed_directory}"
+      mkdir_p testbed_directory 
+    end
+
+    puts "export BUNDLE_GEMFILE=#{testbed.gemfile.to_s.inspect}"
+    ENV['BUNDLE_GEMFILE'] = testbed.gemfile
+    raise "Testbed #{testbed.name} generation failed" unless system $0
+    puts
+  end
+end

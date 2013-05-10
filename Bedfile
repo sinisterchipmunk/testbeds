@@ -1,0 +1,15 @@
+store_in "spec/testbeds"
+
+testbeds do
+  gemfiles 'gemfiles/rails-3.2',
+           'gemfiles/rails-4.0'
+
+  init do
+    run "rails", "new", name, "--skip-bundle", "--skip-gemfile"
+    chdir name
+    run "rails", "g", "rspec:install"
+  end
+
+  rakefile '<%= name %>/Rakefile'
+  depend_on '<%= name %>/config/application.rb'
+end
