@@ -8,9 +8,9 @@ Gem::Specification.new do |gem|
   gem.version       = Testbeds::VERSION
   gem.authors       = ["Colin MacKenzie IV"]
   gem.email         = ["sinisterchipmunk@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = "Manage multiple testbed environments for your gems"
+  gem.summary       = "Manage multiple testbed environments for your gems"
+  gem.homepage      = "http://github.com/sinisterchipmunk/testbeds"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
