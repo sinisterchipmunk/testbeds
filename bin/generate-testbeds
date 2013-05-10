@@ -15,7 +15,7 @@ def run *command
     end
     raise "Command failed" unless result
   else
-    `bundle exec #{command.join(' ')}`
+    output = `bundle exec #{command.join(' ')}`
     raise "Command failed\n\n#{output}" unless $?.success?
   end
 end
