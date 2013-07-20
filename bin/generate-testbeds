@@ -24,22 +24,13 @@ if testbed = Testbeds.current
   testbed_directory = testbed.store_in.to_s
 
   chdir testbed_directory
-
-  puts 'bundle install'
-  if ENV['VERBOSE']
-    unless system 'bundle install'
-      raise "Couldn't install bundle for testbed #{testbed.name}"
-    end
-  else
-    output = `bundle install`
-    unless $?.success?
-      raise "Couldn't install bundle for testbed #{testbed.name}\n\n#{output}"
-    end
-  end
-
   testbed.run_init_script
 else
   cleared = {}
+  if ENV['GENERATING_TESTBEDS']
+    raise "Loop detected -- something's wrong. Check your Bedfile, and make sure all bundles are installed."
+  end
+  ENV['GENERATING_TESTBEDS'] = '1'
   Testbeds.each do |testbed|
     testbed_directory = testbed.store_in.to_s
 
